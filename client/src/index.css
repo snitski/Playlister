@@ -1,0 +1,94 @@
+html {
+    background-image: linear-gradient(to bottom right, #3874CB, rgb(57, 136, 70));
+}
+
+body {
+    margin: 0;
+}
+
+a {
+    text-decoration: none;
+    color: black;
+}
+
+.center-element {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#site-wrapper {
+    display: grid;
+    grid-template-rows: 55px auto;
+    height: 100vh;
+}
+
+#menu-bar {
+    grid-row: 1 / 2; 
+
+    display: grid;
+    grid-template-columns: 75px auto 75px;
+    background-color: white;
+}
+
+#splashscreen-buttons {
+    display: grid;
+    grid-template-columns: 50% 50%;
+    padding: 10px;
+    background-color: white;
+    border-radius: 5px;
+}
+
+#splashscreen-buttons > * {
+    margin: 5px;
+}
+
+#login-screen {
+    grid-row: 2 / 3;
+
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#login-form {
+    display:flex;
+    flex-direction: column;
+
+    width: 350px;
+
+    background-color: white;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#login-form > * {
+    margin: 5px;
+}
+
+#register-screen {
+    grid-row: 2 / 3;
+
+    height: 100%;
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#register-form {
+    display: grid;
+    grid-template-columns: auto auto;
+
+    background-color: white;
+    padding: 15px;
+    border-radius: 5px;
+}
+
+#register-form > * {
+    margin: 5px;
+}
