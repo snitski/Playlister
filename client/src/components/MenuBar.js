@@ -35,9 +35,14 @@ export default function MenuBar() {
         <Link to={'/register'}><MenuItem onClick={handleMenuClose}>Create New Account</MenuItem></Link>,
         <Link to={'/login'}><MenuItem onClick={handleMenuClose}>Log In</MenuItem></Link>
     ];
+    
+    let accountIcon = <AccountCircle />;
 
     if(loggedInMenu) {
         menuItems = <Link to={'/'}><MenuItem onClick={handleLogout}>Logout</MenuItem></Link>
+        if(auth.user !== null) {
+            accountIcon = auth.user.firstName.charAt(0) + auth.user.lastName.charAt(0)
+        }
     }
 
     return(
@@ -46,7 +51,7 @@ export default function MenuBar() {
                 <Typography sx={{margin: '15px', fontWeight: 'bold', fontStyle: 'italic'}}>Playlister</Typography>
             </Link>
             <IconButton sx={{gridColumn: '3/4'}} size='large' onClick={handleMenuOpen}>
-                <AccountCircle />
+                {accountIcon}
             </IconButton>
             <Menu anchorEl={popupMenuAnchor} open={popupMenuAnchor !== null} onClose={handleMenuClose}>
                 {menuItems}
