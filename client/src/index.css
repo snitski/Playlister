@@ -11,7 +11,7 @@ a {
     color: black;
 }
 
-.center-element {
+.center-children {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -43,15 +43,12 @@ a {
     margin: 5px;
 }
 
-#login-screen {
-    grid-row: 2 / 3;
-
-    height: 100%;
-    width: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.modal {
+    flex-direction: column;
+    background-color: white;
+    padding: 15px;
+    border-radius: 5px;
+    width: 500px;
 }
 
 #login-form {
@@ -67,17 +64,6 @@ a {
 
 #login-form > * {
     margin: 5px;
-}
-
-#register-screen {
-    grid-row: 2 / 3;
-
-    height: 100%;
-    width: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
 }
 
 #register-form {

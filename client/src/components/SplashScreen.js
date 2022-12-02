@@ -3,34 +3,34 @@ import Button from '@mui/material/Button';
 import { Link } from 'react-router-dom';
 
 export default function SplashScreen() {
-    let description = 'Where you can create, play, and share YouTube playlists all in one place. Playlister comes with its own standalone features for the best experience!';
+    const description = 'Where you can create, play, and share YouTube playlists all in one place. Playlister comes with its own standalone features for the best experience!';
 
-    let handleGuestClick = () => {
+    const handleGuestClick = () => {
 
     }
 
     return (
-        <div className='center-element' style={{display: 'grid', color: 'white'}}>
-            <Typography 
-                variant='h1'
-                sx={{
-                    fontWeight: 'bold',
-                    fontStyle: 'italic',
-                    margin: '10px',
-                    width: '430px'
-                }}
-            >Playlister
+        <div className='center-children' style={{display: 'grid', color: 'white'}}>
+            <span>
+                <Typography 
+                    variant='h1'
+                    sx={{
+                        fontWeight: 'bold',
+                        fontStyle: 'italic',
+                        width: '430px'
+                    }}
+                >Playlister</Typography>
                 <Typography
                     variant='h6'
                     sx={{
                         fontStyle: 'italic',
-                        marginLeft: '10px',
                         width: '400px',
                         textAlign: 'center'
                     }}
                 >{description}</Typography>
-            </Typography>
-            <div class='center-element'>
+            </span>
+
+            <div className='center-children'>
                 <div id='splashscreen-buttons'>
                     <Link to='/login'>
                         <Button

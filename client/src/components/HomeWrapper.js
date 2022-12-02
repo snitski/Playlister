@@ -1,7 +1,14 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import SplashScreen from "./SplashScreen";
+import AuthContext from "../auth";
 
 export default function HomeWrapper() {
-    let [currentHomeScreen, setCurrentHomeScreen] = useState(<SplashScreen />);
+    const auth = useContext(AuthContext);
+    const splashScreenElement = <SplashScreen />;
+    const [currentHomeScreen, setCurrentHomeScreen] = useState(splashScreenElement);
+
+    if(!auth.loggedIn && currentHomeScreen !== splashScreenElement)
+        setCurrentHomeScreen(splashScreenElement);
+
     return currentHomeScreen;
 }

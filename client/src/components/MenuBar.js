@@ -3,32 +3,33 @@ import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
+import AuthContext from '../auth';
 
 export default function MenuBar() {
-    let [menuAnchor, setMenuAnchor] = useState(null);
-    let [loggedIn, setLoggedIn] = useState(false);
+    const auth = useContext(AuthContext);
+    const [popupMenuAnchor, setPopupMenuAnchor] = useState(null);
 
-    let handleMenuOpen = (event) => {
-        setMenuAnchor(event.target);
+    const handleMenuOpen = (event) => {
+        setPopupMenuAnchor(event.target);
     };
 
-    let handleMenuClose = (event) => {
-        setMenuAnchor(null);
+    const handleMenuClose = (event) => {
+        setPopupMenuAnchor(null);
     };
 
-    let handleLogout = (event) => {
-        setMenuAnchor(null);
+    const handleLogout = (event) => {
+        setPopupMenuAnchor(null);
     }
 
-    let menuItems = 
+    const menuItems = 
         [
             <Link to={'/register'}><MenuItem onClick={handleMenuClose}>Create New Account</MenuItem></Link>,
-            <Link to={'/login'}><MenuItem onClick={handleMenuClose}>Login</MenuItem></Link>
+            <Link to={'/login'}><MenuItem onClick={handleMenuClose}>Log In</MenuItem></Link>
         ];
 
-    if(loggedIn)
+    if(auth.loggedIn)
     {
         menuItems = <Link to={'/'}><MenuItem onClick={handleLogout}>Logout</MenuItem></Link>;
     }
@@ -41,7 +42,7 @@ export default function MenuBar() {
             <IconButton sx={{gridColumn: '3/4'}} size='large' onClick={handleMenuOpen}>
                 <AccountCircle />
             </IconButton>
-            <Menu anchorEl={menuAnchor} open={menuAnchor !== null} onClose={handleMenuClose}>
+            <Menu anchorEl={popupMenuAnchor} open={popupMenuAnchor !== null} onClose={handleMenuClose}>
                 {menuItems}
             </Menu>
         </div>
