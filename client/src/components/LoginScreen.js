@@ -1,13 +1,16 @@
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal';
-import Typography from '@mui/material/Typography'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
+import {
+    TextField,
+    Button,
+    Modal,
+    Alert,
+    AlertTitle
+} from '@mui/material'
 import { useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import AuthContext from '../auth';
 
 export default function LoginScreen() {
+    const { auth } = useContext(AuthContext);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
@@ -33,11 +36,16 @@ export default function LoginScreen() {
         })
     }
 
-    const handleSubmit = () => {
-        if(formData.email === '' || formData.password.length < 8)
+    const handleSubmit = async () => {
+        if(formData.email === '' || formData.password.length < 8) {
             setModalMessage('Please enter a valid email address and password.');
-        else
-            console.log(formData);
+        }
+        else {
+            const response = await auth.loginUser(formData);
+            if(response.status !== 200) {
+                setModalMessage(response.data.errorMessage);
+            }
+        }
     }
 
     const handleModalClose = () => {

@@ -42,29 +42,25 @@ loginUser = async (req, res) => {
         }
 
         const existingUser = await User.findOne({ email: email });
-        console.log("existingUser: " + existingUser);
         if (!existingUser) {
             return res
-                .status(401)
+                .status(400)
                 .json({
-                    errorMessage: "Wrong email or password provided."
+                    errorMessage: "Incorrect email or password."
                 })
         }
 
-        console.log("provided password: " + password);
         const passwordCorrect = await bcrypt.compare(password, existingUser.passwordHash);
         if (!passwordCorrect) {
-            console.log("Incorrect password");
             return res
-                .status(401)
+                .status(400)
                 .json({
-                    errorMessage: "Wrong email or password provided."
+                    errorMessage: "Incorrect email or password provided."
                 })
         }
 
         // LOGIN THE USER
         const token = auth.signToken(existingUser._id);
-        console.log(token);
 
         res.cookie("token", token, {
             httpOnly: true,
@@ -75,7 +71,8 @@ loginUser = async (req, res) => {
             user: {
                 firstName: existingUser.firstName,
                 lastName: existingUser.lastName,  
-                email: existingUser.email              
+                email: existingUser.email,
+                username: existingUser.username              
             }
         })
 
@@ -96,55 +93,65 @@ logoutUser = async (req, res) => {
 
 registerUser = async (req, res) => {
     try {
-        const { firstName, lastName, email, password, passwordVerify } = req.body;
-        console.log("create user: " + firstName + " " + lastName + " " + email + " " + password + " " + passwordVerify);
-        if (!firstName || !lastName || !email || !password || !passwordVerify) {
+        const { username, firstName, lastName, email, password, confirmPassword } = req.body;
+        console.log(req.body.formData);
+        if (!username || !firstName || !lastName || !email || !password || !confirmPassword) {
             return res
                 .status(400)
-                .json({ errorMessage: "Please enter all required fields." });
+                .json({ 
+                    success: false,
+                    errorMessage: "Please enter all required fields." 
+                });
         }
-        console.log("all fields provided");
-        if (password.length < 8) {
+        else if (password.length < 8) {
             return res
                 .status(400)
                 .json({
+                    success: false,
                     errorMessage: "Please enter a password of at least 8 characters."
                 });
         }
-        console.log("password long enough");
-        if (password !== passwordVerify) {
+        else if (password !== confirmPassword) {
             return res
                 .status(400)
                 .json({
+                    success: false,
                     errorMessage: "Please enter the same password twice."
-                })
+                });
         }
-        console.log("password and password verify match");
-        const existingUser = await User.findOne({ email: email });
-        console.log("existingUser: " + existingUser);
-        if (existingUser) {
+
+        const existingEmail = await User.findOne({ email: email });
+        if (existingEmail) {
             return res
                 .status(400)
                 .json({
                     success: false,
                     errorMessage: "An account with this email address already exists."
-                })
+                });
+        }
+
+        const existingUsername = await User.findOne({ username: username });
+        if (existingUsername) {
+            return res
+                .status(400)
+                .json({
+                    success: false,
+                    errorMessage: "An account with this username address already exists."
+                });
         }
 
         const saltRounds = 10;
         const salt = await bcrypt.genSalt(saltRounds);
         const passwordHash = await bcrypt.hash(password, salt);
-        console.log("passwordHash: " + passwordHash);
 
         const newUser = new User({
-            firstName, lastName, email, passwordHash
+            username, firstName, lastName, email, passwordHash
         });
         const savedUser = await newUser.save();
         console.log("new user saved: " + savedUser._id);
 
         // LOGIN THE USER
         const token = auth.signToken(savedUser._id);
-        console.log("token:" + token);
 
         await res.cookie("token", token, {
             httpOnly: true,
@@ -155,7 +162,8 @@ registerUser = async (req, res) => {
             user: {
                 firstName: savedUser.firstName,
                 lastName: savedUser.lastName,  
-                email: savedUser.email              
+                email: savedUser.email,
+                username: savedUser.username
             }
         })
 

@@ -1,17 +1,20 @@
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Modal from '@mui/material/Modal'
-import Alert from '@mui/material/Alert'
-import AlertTitle from '@mui/material/AlertTitle'
+import {
+    TextField,
+    Button,
+    Modal,
+    Alert,
+    AlertTitle
+} from '@mui/material'
 import { useNavigate } from 'react-router-dom';
 import { useState, useContext } from 'react';
 import AuthContext from '../auth';
 
 export default function RegisterScreen() {
     const navigate = useNavigate();
-    const auth = useContext(AuthContext);
+    const { auth } = useContext(AuthContext);
     const [modalMessage, setModalMessage] = useState('');
     const [formData, setFormData] = useState({
+        username: '',
         firstName: '',
         lastName: '',
         email: '',
@@ -23,8 +26,20 @@ export default function RegisterScreen() {
         navigate('/login');
     }
 
+    const handleUserNameChange = (event) => {
+        setFormData({
+            username: event.target.value,
+            firstName: formData.firstName,
+            lastName: formData.lastName,
+            email: formData.email,
+            password: formData.password,
+            confirmPassword: formData.confirmPassword
+        });
+    }
+
     const handleFirstNameChange = (event) => {
         setFormData({
+            username: formData.username,
             firstName: event.target.value,
             lastName: formData.lastName,
             email: formData.email,
@@ -35,6 +50,7 @@ export default function RegisterScreen() {
     
     const handleLastNameChange = (event) => {
         setFormData({
+            username: formData.username,
             firstName: formData.firstName,
             lastName: event.target.value,
             email: formData.email,
@@ -45,6 +61,7 @@ export default function RegisterScreen() {
 
     const handleEmailChange = (event) => {
         setFormData({
+            username: formData.username,
             firstName: formData.firstName,
             lastName: formData.lastName,
             email: event.target.value,
@@ -55,6 +72,7 @@ export default function RegisterScreen() {
 
     const handlePasswordChange = (event) => {
         setFormData({
+            username: formData.username,
             firstName: formData.firstName,
             lastName: formData.lastName,
             email: formData.email,
@@ -65,6 +83,7 @@ export default function RegisterScreen() {
 
     const handleConfirmPasswordChange = (event) => {
         setFormData({
+            username: formData.username,
             firstName: formData.firstName,
             lastName: formData.lastName,
             email: formData.email,
@@ -73,7 +92,7 @@ export default function RegisterScreen() {
         });
     }
 
-    const handleSubmit = () => {
+    const handleSubmit = async () => {
         let emptyField = false;
         for(const field in formData) {
             if(formData[field] === '') {
@@ -81,18 +100,22 @@ export default function RegisterScreen() {
                 break;
             }
         }
-
-        if(emptyField)
-            setModalMessage('Please enter all required fields.');
         
-        else if(formData.password.length < 8)
+        if(emptyField) {
+            setModalMessage('Please enter all required fields.');
+        }
+        else if(formData.password.length < 8){
             setModalMessage('Please enter a password at least 8 characters in length.')
-
-        else if(formData.password !== formData.confirmPassword)
+        }
+        else if(formData.password !== formData.confirmPassword) {
             setModalMessage('The passwords do not match.');
-
-        else 
-            console.log(formData)
+        }
+        else {
+            const response = await auth.registerUser(formData);
+            if(response.status !== 200) {
+                setModalMessage(response.data.errorMessage);
+            }
+        }
     }
 
     const handleModalClose = () => {
@@ -136,6 +159,13 @@ export default function RegisterScreen() {
                     sx={{gridColumn: '2/3'}}
                     value={formData.lastName}
                     onChange={handleLastNameChange}
+                ></TextField>
+                <TextField
+                    label='Username'
+                    required
+                    sx={{gridColumn: '1/3'}}
+                    value={formData.username}
+                    onChange={handleUserNameChange}
                 ></TextField>
                 <TextField
                     label='Email'

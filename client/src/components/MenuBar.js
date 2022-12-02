@@ -1,15 +1,22 @@
-import AccountCircle from '@mui/icons-material/AccountCircle';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import Menu from '@mui/material/Menu';
-import MenuItem from '@mui/material/MenuItem';
+import {
+    IconButton,
+    Typography,
+    Menu,
+    MenuItem
+} from '@mui/material'
+import { AccountCircle } from '@mui/icons-material';
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../auth';
 
 export default function MenuBar() {
-    const auth = useContext(AuthContext);
+    const { auth } = useContext(AuthContext);
     const [popupMenuAnchor, setPopupMenuAnchor] = useState(null);
+    const [loggedInMenu, setLoggedInMenu] = useState(false);
+
+    if(auth.loggedIn !== loggedInMenu) {
+        setLoggedInMenu(auth.loggedIn);
+    }
 
     const handleMenuOpen = (event) => {
         setPopupMenuAnchor(event.target);
@@ -20,18 +27,17 @@ export default function MenuBar() {
     };
 
     const handleLogout = (event) => {
+        auth.logoutUser();
         setPopupMenuAnchor(null);
     }
 
-    const menuItems = 
-        [
-            <Link to={'/register'}><MenuItem onClick={handleMenuClose}>Create New Account</MenuItem></Link>,
-            <Link to={'/login'}><MenuItem onClick={handleMenuClose}>Log In</MenuItem></Link>
-        ];
+    let menuItems = [
+        <Link to={'/register'}><MenuItem onClick={handleMenuClose}>Create New Account</MenuItem></Link>,
+        <Link to={'/login'}><MenuItem onClick={handleMenuClose}>Log In</MenuItem></Link>
+    ];
 
-    if(auth.loggedIn)
-    {
-        menuItems = <Link to={'/'}><MenuItem onClick={handleLogout}>Logout</MenuItem></Link>;
+    if(loggedInMenu) {
+        menuItems = <Link to={'/'}><MenuItem onClick={handleLogout}>Logout</MenuItem></Link>
     }
 
     return(
