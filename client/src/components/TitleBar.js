@@ -9,7 +9,7 @@ import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../auth';
 
-export default function MenuBar() {
+export default function TitleBar() {
     const { auth } = useContext(AuthContext);
     const [popupMenuAnchor, setPopupMenuAnchor] = useState(null);
     const [loggedInMenu, setLoggedInMenu] = useState(false);
@@ -27,8 +27,8 @@ export default function MenuBar() {
     };
 
     const handleLogout = (event) => {
-        auth.logoutUser();
         setPopupMenuAnchor(null);
+        auth.logoutUser();
     }
 
     let menuItems = [
@@ -46,7 +46,7 @@ export default function MenuBar() {
     }
 
     return(
-        <div id="menu-bar">
+        <div id="title-bar">
             <Link to='/'>
                 <Typography sx={{margin: '15px', fontWeight: 'bold', fontStyle: 'italic'}}>Playlister</Typography>
             </Link>

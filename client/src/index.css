@@ -23,7 +23,7 @@ a {
     height: 100vh;
 }
 
-#menu-bar {
+#title-bar {
     grid-row: 1 / 2; 
 
     display: grid;
@@ -34,6 +34,7 @@ a {
 #splashscreen-buttons {
     display: grid;
     grid-template-columns: 50% 50%;
+    width: 225px;
     padding: 10px;
     background-color: white;
     border-radius: 5px;
@@ -51,30 +52,59 @@ a {
     width: 500px;
 }
 
+.form {
+    width: 400px;
+
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+
+    gap: 10px;
+}
+
 #login-form {
     display:flex;
     flex-direction: column;
-
-    width: 350px;
-
-    background-color: white;
-    padding: 15px;
-    border-radius: 5px;
-}
-
-#login-form > * {
-    margin: 5px;
 }
 
 #register-form {
     display: grid;
     grid-template-columns: auto auto;
+}
+
+#playlist-view {
+    display: grid;
+    grid-template-rows: 67px auto 67px;
+    padding: 12px;
+    gap: 12px;
+}
+
+#playlist-view-content {
+    display: flex;
+    gap: 12px;
+    flex-direction: row;
+}
+
+.content-card {
+    width: 100%;
+    height: 100%;
 
     background-color: white;
-    padding: 15px;
     border-radius: 5px;
 }
 
-#register-form > * {
-    margin: 5px;
+#nav-bar {
+    display: grid;
+    grid-template-columns: 50px 50px 50px auto 50px;
+}
+
+#search-bar {
+    display: flex;
+    align-items: center;
+    margin-left: 50px;
+    width: 350px;
+}
+
+.status-bar {
+    font-size: 100pt;
 }

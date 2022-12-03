@@ -134,7 +134,7 @@ export default function RegisterScreen() {
                         severity='error'
                         variant='filled'
                     >
-                        <AlertTitle>Unable to register account</AlertTitle>
+                        <AlertTitle>Unable to register account.</AlertTitle>
                         {modalMessage}
                     </Alert>
                     <Button 
@@ -145,7 +145,7 @@ export default function RegisterScreen() {
                 </div>
             </Modal>
 
-            <div id='register-form'>
+            <div className='form' id='register-form'>
                 <TextField
                     label='First Name'
                     required

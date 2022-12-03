@@ -64,7 +64,7 @@ export default function LoginScreen() {
                         severity='error' 
                         variant='filled'
                     >
-                        <AlertTitle>Unable to login</AlertTitle>
+                        <AlertTitle>Unable to log in.</AlertTitle>
                         {modalMessage}
                     </Alert>
                     <Button 
@@ -75,7 +75,7 @@ export default function LoginScreen() {
                 </div>
             </Modal>
 
-            <div id='login-form'>
+            <div className='form' id='login-form'>
                 <TextField
                     required
                     label='Email'

@@ -1,25 +1,28 @@
 import { useContext, useState } from "react";
+import { useNavigate } from 'react-router-dom';
 import AuthContext from "../auth";
+import GlobalStoreContext from "../store";
 import SplashScreen from "./SplashScreen";
-import PersonalLists from "./PersonalLists"
+import PlaylistView from "./PlaylistView"
 
 export default function HomeWrapper() {
     const { auth } = useContext(AuthContext);
-    const [currentHomeScreen, setCurrentHomeScreen] = useState(0);
+    const { store } = useContext(GlobalStoreContext);
     
-    if(!auth.loggedIn && currentHomeScreen !== 0) {
-        setCurrentHomeScreen(0);
+    if(!auth.loggedIn && store.currentHomeScreen !== 0) {
+        store.updateCurrentHomeScreen(0);
     }
 
-    if(auth.loggedIn && currentHomeScreen !== 1) {
-        setCurrentHomeScreen(1);
+    if(auth.loggedIn && store.currentHomeScreen !== 1) {
+        store.updateCurrentHomeScreen(1);
     }
 
     let currentHomeScreenElement = <SplashScreen />;
 
-    if(currentHomeScreen === 1) {
-        currentHomeScreenElement = <PersonalLists />
+    if(store.currentHomeScreen === 1) {
+        currentHomeScreenElement = <PlaylistView />
+        return <PlaylistView />;
     }
 
-    return currentHomeScreenElement;
+    return <SplashScreen />;
 }

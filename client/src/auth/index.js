@@ -1,10 +1,13 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import api from './axios-api';
 import { useNavigate } from 'react-router-dom'
+import api from './axios-api';
+import GlobalStoreContext from '../store';
+import { PlaylistViews } from '../store';
 
 const AuthContext = createContext();
 
 function AuthContextProvider(props) {
+    const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
     const [auth, setAuth] = useState({
         user: null,
@@ -14,7 +17,7 @@ function AuthContextProvider(props) {
     auth.registerUser = async (formData) => {
         const response = await api.registerUser(formData)
         if(response.status === 200) {
-            await auth.loginUser(formData);
+            navigate('/login');
             return response;
         }
         return response.response;
@@ -27,7 +30,8 @@ function AuthContextProvider(props) {
                 user: response.data.user,
                 loggedIn: true
             });
-            navigate('/');
+            navigate('/home');
+            store.setCurrentPlaylistView(PlaylistViews.HOME);
             return response;
         }
         return response.response;
@@ -41,6 +45,7 @@ function AuthContextProvider(props) {
                 loggedIn: false
             })
             navigate('/');
+            store.setCurrentPlaylistView(PlaylistViews.ALL);
         }
     }
 
