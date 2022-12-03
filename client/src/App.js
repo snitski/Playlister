@@ -10,19 +10,19 @@ import ViewWrapper from './components/ViewWrapper';
 export default function App() {
     return(
         <BrowserRouter>
-            <GlobalStoreContextProvider>
-                <AuthContextProvider>
-                        <div id='site-wrapper'>
-                            <TitleBar />
-                            <Routes>
-                                <Route path='/' element={<SplashScreen />}></Route>
-                                <Route path='/login' element={<LoginScreen />}></Route>
-                                <Route path='/register' element={<RegisterScreen />}></Route>
-                                <Route path='/home' element={<ViewWrapper />}></Route>
-                            </Routes>
-                        </div>
-                </AuthContextProvider>
-            </GlobalStoreContextProvider>
+            <AuthContextProvider>
+                <GlobalStoreContextProvider>
+                    <div id='site-wrapper'>
+                        <TitleBar />
+                        <Routes>
+                            <Route path='/' element={<SplashScreen />}></Route>
+                            <Route path='/login' element={<LoginScreen />}></Route>
+                            <Route path='/register' element={<RegisterScreen />}></Route>
+                            <Route path='/home' element={<ViewWrapper />}></Route>
+                        </Routes>
+                    </div>
+                </GlobalStoreContextProvider>
+            </AuthContextProvider>
         </BrowserRouter>
     );
 }

@@ -8,9 +8,12 @@ import { AccountCircle } from '@mui/icons-material';
 import { useContext, useState } from 'react';
 import { Link } from 'react-router-dom';
 import AuthContext from '../auth';
+import GlobalStoreContext from '../store';
+import { ViewTypes } from '../store';
 
 export default function TitleBar() {
     const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
     const [popupMenuAnchor, setPopupMenuAnchor] = useState(null);
     const [loggedInMenu, setLoggedInMenu] = useState(false);
 
@@ -22,13 +25,14 @@ export default function TitleBar() {
         setPopupMenuAnchor(event.target);
     };
 
-    const handleMenuClose = (event) => {
+    const handleMenuClose = () => {
         setPopupMenuAnchor(null);
     };
 
-    const handleLogout = (event) => {
+    const handleLogout = () => {
         setPopupMenuAnchor(null);
         auth.logoutUser();
+        store.setCurrentView(ViewTypes.ALL);
     }
 
     let menuItems = [

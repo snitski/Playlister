@@ -8,9 +8,12 @@ import {
 import { useNavigate } from 'react-router-dom';
 import { useContext, useState } from 'react';
 import AuthContext from '../auth';
+import GlobalStoreContext from '../store';
+import { ViewTypes } from '../store';
 
 export default function LoginScreen() {
     const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
     const [formData, setFormData] = useState({
         email: '',
@@ -42,7 +45,10 @@ export default function LoginScreen() {
         }
         else {
             const response = await auth.loginUser(formData);
-            if(response.status !== 200) {
+            if(response.status === 200) {
+                store.setCurrentView(ViewTypes.HOME);
+            }
+            else {
                 setModalMessage(response.data.errorMessage);
             }
         }

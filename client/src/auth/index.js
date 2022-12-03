@@ -1,13 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, { createContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import api from './axios-api';
-import GlobalStoreContext from '../store';
-import { ViewTypes } from '../store';
 
 const AuthContext = createContext();
 
 function AuthContextProvider(props) {
-    const { store } = useContext(GlobalStoreContext);
     const navigate = useNavigate();
     const [auth, setAuth] = useState({
         user: null,
@@ -31,7 +28,6 @@ function AuthContextProvider(props) {
                 loggedIn: true
             });
             navigate('/home');
-            store.setCurrentView(ViewTypes.HOME);
             return response;
         }
         return response.response;
@@ -45,7 +41,6 @@ function AuthContextProvider(props) {
                 loggedIn: false
             })
             navigate('/');
-            store.setCurrentView(ViewTypes.ALL);
         }
     }
 

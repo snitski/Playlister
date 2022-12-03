@@ -1,5 +1,6 @@
 import { createContext, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
+import AuthContext from '../auth';
 
 export const GlobalStoreContext = createContext();
 
@@ -15,6 +16,7 @@ export const StoreActionType = {
 }
 
 function GlobalStoreContextProvider(props) {
+    const { auth } = useContext(AuthContext);
     const [store, setStore] = useState({
         currentView: ViewTypes.ALL,
         currentQuery: ''
