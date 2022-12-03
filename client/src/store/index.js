@@ -3,44 +3,44 @@ import { useNavigate } from 'react-router-dom'
 
 export const GlobalStoreContext = createContext();
 
-export const PlaylistViews = {
+export const ViewTypes = {
     HOME: 0,
     ALL: 1,
     USER: 2
 }
 
 export const StoreActionType = {
-    UPDATE_PLAYLIST_VIEW: "UPDATE_PLAYLIST_VIEW",
+    UPDATE_VIEW: "UPDATE_VIEW",
     UPDATE_QUERY: "UPDATE_QUERY"
 }
 
 function GlobalStoreContextProvider(props) {
     const [store, setStore] = useState({
-        currentPlaylistView: PlaylistViews.ALL,
+        currentView: ViewTypes.ALL,
         currentQuery: ''
     });
 
     const storeReducer = (action) => {
         const { type, payload } = action;
         switch (type) {
-            case StoreActionType.UPDATE_PLAYLIST_VIEW: {
+            case StoreActionType.UPDATE_VIEW: {
                 return setStore({
-                    currentPlaylistView: payload,
+                    currentView: payload,
                     currentQuery: ''
                 })
             }
             case StoreActionType.UPDATE_QUERY: {
                 return setStore({
-                    currentPlaylistView: store.currentPlaylistView,
+                    currentView: store.currentView,
                     currentQuery: payload
                 });
             }
         }
     }
 
-    store.setCurrentPlaylistView = (newView) => {
+    store.setCurrentView = (newView) => {
         storeReducer({
-            type: StoreActionType.UPDATE_PLAYLIST_VIEW,
+            type: StoreActionType.UPDATE_VIEW,
             payload: newView
         })
     }
@@ -50,6 +50,10 @@ function GlobalStoreContextProvider(props) {
             type: StoreActionType.UPDATE_QUERY,
             payload: newQuery
         })
+    }
+
+    store.createNewList = () => {
+
     }
 
     return (

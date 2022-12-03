@@ -5,7 +5,7 @@ import LoginScreen from './components/LoginScreen';
 import RegisterScreen from './components/RegisterScreen';
 import TitleBar from './components/TitleBar';
 import SplashScreen from './components/SplashScreen';
-import PlaylistView from './components/PlaylistView';
+import ViewWrapper from './components/ViewWrapper';
 
 export default function App() {
     return(
@@ -18,7 +18,7 @@ export default function App() {
                                 <Route path='/' element={<SplashScreen />}></Route>
                                 <Route path='/login' element={<LoginScreen />}></Route>
                                 <Route path='/register' element={<RegisterScreen />}></Route>
-                                <Route path='/home' element={<PlaylistView />}></Route>
+                                <Route path='/home' element={<ViewWrapper />}></Route>
                             </Routes>
                         </div>
                 </AuthContextProvider>

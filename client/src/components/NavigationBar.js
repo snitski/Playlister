@@ -15,7 +15,7 @@ import {
 } from '@mui/icons-material'
 import AuthContext from '../auth';
 import GlobalStoreContext from '../store';
-import { PlaylistViews } from '../store';
+import { ViewTypes } from '../store';
 
 export default function NavigationBar() {
     const { auth } = useContext(AuthContext);
@@ -27,22 +27,22 @@ export default function NavigationBar() {
         setPopupMenuAnchor(event.target)
     }
 
-    const handleMenuClose = (event) => {
+    const handleMenuClose = () => {
         setPopupMenuAnchor(null);
     }
 
-    const handleHomeButton = (event) => {
-        store.setCurrentPlaylistView(PlaylistViews.HOME);
+    const handleHomeButton = () => {
+        store.setCurrentView(ViewTypes.HOME);
         setSearchText('');
     }
 
-    const handleAllButton = (event) => {
-        store.setCurrentPlaylistView(PlaylistViews.ALL);
+    const handleAllButton = () => {
+        store.setCurrentView(ViewTypes.ALL);
         setSearchText('');
     }
 
-    const handleUserButton = (event) => {
-        store.setCurrentPlaylistView(PlaylistViews.USER);
+    const handleUserButton = () => {
+        store.setCurrentView(ViewTypes.USER);
         setSearchText('');
     }
 
@@ -61,19 +61,19 @@ export default function NavigationBar() {
             <IconButton 
                 size='large' 
                 disabled={!auth.loggedIn} 
-                color={store.currentPlaylistView === PlaylistViews.HOME ? 'primary' : ''}
+                color={store.currentView === ViewTypes.HOME ? 'primary' : ''}
                 onClick={handleHomeButton}
             ><Home /></IconButton>
 
             <IconButton 
                 size='large' 
-                color={store.currentPlaylistView === PlaylistViews.ALL ? 'primary' : ''}
+                color={store.currentView === ViewTypes.ALL ? 'primary' : ''}
                 onClick={handleAllButton}
             ><Groups /></IconButton>
 
             <IconButton 
                 size='large' 
-                color={store.currentPlaylistView === PlaylistViews.USER ? 'primary' : ''}
+                color={store.currentView === ViewTypes.USER ? 'primary' : ''}
                 onClick={handleUserButton}
             ><Person /></IconButton>
 

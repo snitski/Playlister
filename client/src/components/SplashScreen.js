@@ -37,13 +37,13 @@ export default function SplashScreen() {
                 <Button
                     variant='contained'
                     sx={{width: '100%'}}
-                >Change Account</Button>
+                >Switch Accounts</Button>
             </Link>,
             <Link to='/home' style={{gridColumn: '1/3'}}>
                 <Button
                     variant='contained'
                     sx={{width: '100%'}}
-                >Continue Home</Button>
+                >View Playlists</Button>
             </Link>
         ];
     }

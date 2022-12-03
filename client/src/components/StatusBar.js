@@ -7,13 +7,13 @@ import {
 } from '@mui/icons-material';
 import { useContext } from 'react';
 import GlobalStoreContext from '../store';
-import { PlaylistViews } from '../store';
+import { ViewTypes } from '../store';
 
 export default function StatusBar() {
     const { store } = useContext(GlobalStoreContext)
     let content = '';
         
-    if(store.currentPlaylistView === PlaylistViews.HOME) {
+    if(store.currentView === ViewTypes.HOME) {
         content = 
             <Button sx={{ textTransform:'capitalize', fontSize:'16pt' }}>
                 <Add />
@@ -21,7 +21,7 @@ export default function StatusBar() {
             </Button>;
     }
 
-    if(store.currentPlaylistView === PlaylistViews.ALL) {
+    if(store.currentView === ViewTypes.ALL) {
         if(store.currentQuery !== ''){
             content = 
                 <Typography sx={{ fontSize:'16pt' }}>
@@ -30,7 +30,7 @@ export default function StatusBar() {
         }
     }
 
-    if(store.currentPlaylistView === PlaylistViews.USER) {
+    if(store.currentView === ViewTypes.USER) {
         if(store.currentQuery !== ''){
             content = 
                 <Typography sx={{ fontSize:'16pt' }}>

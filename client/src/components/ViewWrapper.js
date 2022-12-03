@@ -3,7 +3,7 @@ import NavigationBar from "./NavigationBar";
 import PlayerCommentWrapper from "./PlayerCommentWrapper";
 import StatusBar from "./StatusBar";
 
-export default function PlaylistView() {
+export default function ViewWrapper() {
     return (
         <div id='playlist-view'>
             <NavigationBar />

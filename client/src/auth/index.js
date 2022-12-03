@@ -2,7 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'
 import api from './axios-api';
 import GlobalStoreContext from '../store';
-import { PlaylistViews } from '../store';
+import { ViewTypes } from '../store';
 
 const AuthContext = createContext();
 
@@ -31,7 +31,7 @@ function AuthContextProvider(props) {
                 loggedIn: true
             });
             navigate('/home');
-            store.setCurrentPlaylistView(PlaylistViews.HOME);
+            store.setCurrentView(ViewTypes.HOME);
             return response;
         }
         return response.response;
@@ -45,7 +45,7 @@ function AuthContextProvider(props) {
                 loggedIn: false
             })
             navigate('/');
-            store.setCurrentPlaylistView(PlaylistViews.ALL);
+            store.setCurrentView(ViewTypes.ALL);
         }
     }
 
