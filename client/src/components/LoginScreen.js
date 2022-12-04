@@ -6,10 +6,9 @@ import {
     AlertTitle
 } from '@mui/material'
 import { useNavigate } from 'react-router-dom';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import AuthContext from '../auth';
 import GlobalStoreContext from '../store';
-import { ViewTypes } from '../store';
 
 export default function LoginScreen() {
     const { auth } = useContext(AuthContext);
@@ -20,6 +19,13 @@ export default function LoginScreen() {
         password: ''
     });
     const [modalMessage, setModalMessage] = useState('');
+
+    useEffect(() => {
+        if(auth.loggedIn) {
+            navigate('/home');
+            store.goToHomeView();
+        }
+    }, [auth])
 
     const handleRegisterRedirect = () => {
         navigate('/register')
@@ -46,7 +52,9 @@ export default function LoginScreen() {
         else {
             const response = await auth.loginUser(formData);
             if(response.status === 200) {
-                store.setCurrentView(ViewTypes.HOME);
+                // Create useEffect hook for when the auth state changes to prevent auth.user from being undefined when getting lists
+                // navigate('/home');
+                // store.goToHomeView();
             }
             else {
                 setModalMessage(response.data.errorMessage);

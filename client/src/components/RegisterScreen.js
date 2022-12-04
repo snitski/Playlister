@@ -112,7 +112,10 @@ export default function RegisterScreen() {
         }
         else {
             const response = await auth.registerUser(formData);
-            if(response.status !== 200) {
+            if(response.status === 200) {
+                navigate('/login'); // According to the specifications, login screen should be shown after successful registration
+            }
+            else {
                 setModalMessage(response.data.errorMessage);
             }
         }

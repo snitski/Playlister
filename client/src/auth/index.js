@@ -1,11 +1,9 @@
 import React, { createContext, useState } from 'react';
-import { useNavigate } from 'react-router-dom'
 import api from './axios-api';
 
 const AuthContext = createContext();
 
 function AuthContextProvider(props) {
-    const navigate = useNavigate();
     const [auth, setAuth] = useState({
         user: null,
         loggedIn: false
@@ -14,7 +12,6 @@ function AuthContextProvider(props) {
     auth.registerUser = async (formData) => {
         const response = await api.registerUser(formData)
         if(response.status === 200) {
-            navigate('/login');
             return response;
         }
         return response.response;
@@ -27,7 +24,6 @@ function AuthContextProvider(props) {
                 user: response.data.user,
                 loggedIn: true
             });
-            navigate('/home');
             return response;
         }
         return response.response;
@@ -40,7 +36,6 @@ function AuthContextProvider(props) {
                 user: null,
                 loggedIn: false
             })
-            navigate('/');
         }
     }
 

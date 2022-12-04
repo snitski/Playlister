@@ -32,17 +32,17 @@ export default function NavigationBar() {
     }
 
     const handleHomeButton = () => {
-        store.setCurrentView(ViewTypes.HOME);
+        store.goToHomeView();
         setSearchText('');
     }
 
     const handleAllButton = () => {
-        store.setCurrentView(ViewTypes.ALL);
+        store.goToAllView();
         setSearchText('');
     }
 
     const handleUserButton = () => {
-        store.setCurrentView(ViewTypes.USER);
+        store.goToUserView();
         setSearchText('');
     }
 
@@ -52,7 +52,7 @@ export default function NavigationBar() {
 
     const handleKeyPress = (event) => {
         if(event.key === 'Enter'){
-            store.setCurrentQuery(searchText);
+            store.searchLists(searchText);
         }
     }
 

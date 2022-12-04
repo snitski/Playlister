@@ -1,5 +1,6 @@
 const mongoose = require('mongoose')
 const Schema = mongoose.Schema
+const ObjectId = Schema.Types.ObjectId
 /*
     This is where we specify the format of the data we're going to put into
     the database.
@@ -9,12 +10,16 @@ const Schema = mongoose.Schema
 const playlistSchema = new Schema(
     {
         name: { type: String, required: true },
-        ownerEmail: { type: String, required: true },
+        ownerEmail: { type: String, required: true }, // QUESTIONABLE
+        ownerUsername: { type: String, required: true},
         songs: { type: [{
             title: String,
             artist: String,
             youTubeId: String
-        }], required: true }
+        }], required: true },
+        published: { type: Boolean, default: false, required: true },
+        likes: { type: [ObjectId], default: [], required: true },
+        dislikes: { type: [ObjectId], default: [], required: true }
     },
     { timestamps: true },
 )

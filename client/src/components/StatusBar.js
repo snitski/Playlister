@@ -12,10 +12,14 @@ import { ViewTypes } from '../store';
 export default function StatusBar() {
     const { store } = useContext(GlobalStoreContext)
     let content = '';
+
+    const handleNewListButton = () => {
+        store.createNewList();
+    }
         
     if(store.currentView === ViewTypes.HOME) {
         content = 
-            <Button sx={{ textTransform:'capitalize', fontSize:'16pt' }}>
+            <Button sx={{ textTransform:'capitalize', fontSize:'16pt' }} onClick={handleNewListButton}>
                 <Add />
                 Create New List
             </Button>;

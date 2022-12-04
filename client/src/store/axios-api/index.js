@@ -4,19 +4,17 @@ const api = axios.create({
     baseURL: 'http://localhost:4000/api',
 })
 
-export const createPlaylist = (newListName, newSongs, userEmail) => {
-    return api.post(`/playlist/`, {
-        name: newListName,
-        songs: newSongs,
-        ownerEmail: userEmail
-    })
+export const createList = (playlistData) => {
+    return api.post(`/playlist/`, playlistData);
 }
 
 export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`)
 
 export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
 
-export const getPlaylistPairs = () => api.get(`/playlistpairs/`)
+export const getPlaylists = (query) => {
+    return api.get(`/playlists/`, { params: query });
+}
 
 export const updatePlaylistById = (id, playlist) => {
     return api.put(`/playlist/${id}`, {
@@ -25,10 +23,10 @@ export const updatePlaylistById = (id, playlist) => {
 }
 
 const apis = {
-    createPlaylist,
+    createList,
     deletePlaylistById,
     getPlaylistById,
-    getPlaylistPairs,
+    getPlaylists,
     updatePlaylistById
 }
 
