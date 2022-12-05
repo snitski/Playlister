@@ -21,6 +21,7 @@ export default function SongCard({ song, index, published }) {
 
     const [removeSongModalOpen, setRemoveSongModalOpen] = useState(false);
     const [editSongModalOpen, setEditSongModalOpen] = useState(false);
+    const [draggedTo, setDraggedTo] = useState(false);
 
     const handleRemoveSongButton = () => {
         setRemoveSongModalOpen(true);
@@ -130,6 +131,34 @@ export default function SongCard({ song, index, published }) {
             </div>
         </Modal>;
 
+    const handleDragStart = (event) => {
+        event.dataTransfer.setData("song", index);
+    }
+
+    const handleDragOver = (event) => {
+        event.preventDefault();
+    }
+
+    const handleDragEnter = (event) => {
+        event.preventDefault();
+        setDraggedTo(true);
+    }
+
+    const handleDragLeave = (event) => {
+        event.preventDefault();
+        setDraggedTo(false);
+    }
+
+    const handleDrop = (event) => {
+        console.log(event);
+        event.preventDefault();
+        let targetIndex = index;
+        let sourceIndex = Number(event.dataTransfer.getData("song"));
+        setDraggedTo(false);
+
+        store.addMoveSongTransaction(sourceIndex, targetIndex);
+}
+
     if(published) {
         return (
             <div className='song-card'>
@@ -139,7 +168,16 @@ export default function SongCard({ song, index, published }) {
     }
     else {
         return (
-            <div className='song-card song-card-unpublished' onClick={handleClick}>
+            <div 
+                className='song-card song-card-unpublished' 
+                onClick={handleClick}
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnter={handleDragEnter}
+                onDragLeave={handleDragLeave}
+                onDrop={handleDrop}
+                draggable="true"
+            >
                 {removeSongModal}
                 {editSongModal}
                 <Typography>{`${index+1}. ${song.title} by ${song.artist}`}</Typography>

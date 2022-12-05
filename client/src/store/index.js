@@ -64,11 +64,7 @@ function GlobalStoreContextProvider(props) {
         })
     }
 
-    store.setOpenedPlaylist = async (playlist) => {
-        // if(store.openedPlaylist) {
-        //     await api.updatePlaylistById(store.openedPlaylist._id, store.openedPlaylist);
-        // }
-        
+    store.setOpenedPlaylist = async (playlist) => {        
         setStore({
             ...store,
             openedPlaylist: playlist
@@ -215,6 +211,31 @@ function GlobalStoreContextProvider(props) {
         });
     }
 
+    store.moveSong = (oldIndex, newIndex) => {
+        if(oldIndex === newIndex) return;
+        let updatedPlaylist = store.openedPlaylist;
+        
+        let songToMove = {
+            title: updatedPlaylist.songs[oldIndex].title,
+            artist: updatedPlaylist.songs[oldIndex].artist,
+            youTubeId: updatedPlaylist.songs[oldIndex].youTubeId
+        }
+        
+        if(oldIndex < newIndex) {
+            updatedPlaylist.songs.splice(newIndex+1, 0, songToMove);
+            updatedPlaylist.songs.splice(oldIndex, 1);
+        }
+        else if(oldIndex > newIndex) {
+            updatedPlaylist.songs.splice(newIndex, 0, songToMove);
+            updatedPlaylist.songs.splice(oldIndex+1, 1);
+        }
+
+        setStore({
+            ...store,
+            openedPlaylist: updatedPlaylist
+        });
+    }
+
     store.addCreateSongTransaction = () => {
         let transaction = new CreateSong_Transaction(
             store, 
@@ -235,6 +256,11 @@ function GlobalStoreContextProvider(props) {
 
     store.addUpdateSongTransaction = (index, oldSong, newSong) => {
         let transaction = new UpdateSong_Transaction(store, index, oldSong, newSong);
+        tps.addTransaction(transaction);
+    }
+
+    store.addMoveSongTransaction = (oldIndex, newIndex) => {
+        let transaction = new MoveSong_Transaction(store, oldIndex, newIndex)
         tps.addTransaction(transaction);
     }
 
