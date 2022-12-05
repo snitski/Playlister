@@ -10,7 +10,6 @@ export const createList = (playlistData) => {
 
 export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`)
 
-export const getPlaylistById = (id) => api.get(`/playlist/${id}`)
 
 export const getPlaylists = (query) => {
     return api.get(`/playlists/`, { params: query });
@@ -25,7 +24,6 @@ export const updatePlaylistById = (id, playlist) => {
 const apis = {
     createList,
     deletePlaylistById,
-    getPlaylistById,
     getPlaylists,
     updatePlaylistById
 }

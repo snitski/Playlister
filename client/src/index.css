@@ -88,9 +88,78 @@ a {
 .content-card {
     width: 100%;
     height: 100%;
+    position: relative;
 
     background-color: white;
     border-radius: 5px;
+}
+
+#list-card-wrapper {
+    position: absolute;
+    top: 3%;
+    height: 94%;
+    left: 3%;
+    width: 94%;
+
+    display: flex;
+    flex-direction: column; 
+    gap: 12px;
+    overflow-y: scroll;
+}
+
+.list-card {
+    display: grid;
+    grid-template-columns: auto 100px 100px;
+    width: 95%;
+
+    padding: 10px;
+
+    background-color: rgb(226, 226, 226);
+    border-radius: 5px;
+}
+
+.ratings {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+}
+.song-list-wrapper {
+    grid-column: 1/4;
+
+    padding: 10px;
+
+    background-color: white;
+    border-radius: 5px;
+}
+
+.song-list-wrapper-buttons {
+    margin-top: 5px;
+
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+.song-list {
+    display: flex;
+    flex-direction: column;
+
+    height: 250px;
+    overflow-y: scroll;
+
+    gap: 5px;
+    padding: 10px;
+}
+
+.song-card {
+    padding: 10px;
+
+    background-color: rgb(226, 226, 226);
+    border-radius: 5px;
+}
+
+.song-card-unpublished {
+    display: grid;
+    grid-template-columns: auto 35px;
 }
 
 #nav-bar {
@@ -103,8 +172,4 @@ a {
     align-items: center;
     margin-left: 50px;
     width: 350px;
-}
-
-.status-bar {
-    font-size: 100pt;
 }

@@ -4,12 +4,13 @@ import ListCard from "./ListCard"
 
 export default function ListCardWrapper() {
     const { store } = useContext(GlobalStoreContext);
-
-    let listCards = store.loadedPlaylists.map((playlist) => ( <ListCard playlist={playlist}/> ))
+    let listCards = store.loadedPlaylists.map((playlist, index) => ( <ListCard index={index} playlist={playlist}/> ))
 
     return(
         <div className='content-card'>
-            {listCards}
+            <div id='list-card-wrapper'>
+                {listCards}
+            </div>
         </div>
     )
 }

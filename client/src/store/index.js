@@ -2,6 +2,11 @@ import { createContext, useContext, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import AuthContext from '../auth';
 import api from './axios-api';
+import jsTPS from '../common/jsTPS'
+import CreateSong_Transaction from '../transactions/CreateSong_Transaction'
+import MoveSong_Transaction from '../transactions/MoveSong_Transaction'
+import RemoveSong_Transaction from '../transactions/RemoveSong_Transaction'
+import UpdateSong_Transaction from '../transactions/UpdateSong_Transaction'
 
 export const GlobalStoreContext = createContext();
 
@@ -11,54 +16,25 @@ export const ViewTypes = {
     USER: 2
 }
 
+const tps = new jsTPS();
+
 function GlobalStoreContextProvider(props) {
     const { auth } = useContext(AuthContext);
     const [store, setStore] = useState({
         currentView: ViewTypes.ALL,
         currentQuery: '',
-        loadedPlaylists: []
+        loadedPlaylists: [],
+        openedPlaylist: null
     });
-
-    // const storeReducer = (action) => {
-    //     const { type, payload } = action;
-    //     switch (type) {
-    //         case "SET_VIEW": {
-    //             return setStore({
-    //                 currentView: payload,
-    //                 currentQuery: '',
-    //                 loadedPlaylists: store.loadedPlaylists
-    //             })
-    //         }
-    //         case "SET_QUERY": {
-    //             return setStore({
-    //                 currentView: store.currentView,
-    //                 currentQuery: payload,
-    //                 loadedPlaylists: store.loadedPlaylists
-    //             });
-    //         }
-    //         case "SET_LOADED_PLAYLISTS": {
-    //             return setStore({
-    //                 currentView: ViewTypes.ALL,
-    //                 currentQuery: store.currentQuery,
-    //                 loadedPlaylists: payload
-    //             })
-    //         }
-    //     }
-    // }
 
     store.goToHomeView = async () => {
         setStore({
             ...store,
             currentView: ViewTypes.HOME,
             currentQuery: '',
-            loadedPlaylists: await store.getOwnedLists()
+            loadedPlaylists: await store.getOwnedLists(),
+            openedPlaylist: null
         })
-        // await store.getOwnedLists();
-        // store.getOwnedLists()
-        // storeReducer({
-        //     type: "SET_VIEW",
-        //     payload: ViewTypes.HOME
-        // });
     }
 
     store.goToAllView = async () => {
@@ -66,13 +42,9 @@ function GlobalStoreContextProvider(props) {
             ...store,
             currentView: ViewTypes.ALL,
             currentQuery: '',
-            loadedPlaylists: []
+            loadedPlaylists: [],
+            openedPlaylist: null
         })
-        // await store.clearLoadedLists();
-        // storeReducer({
-        //     type: "SET_VIEW",
-        //     payload: ViewTypes.ALL
-        // })
     }
 
     store.goToUserView = async () => {
@@ -80,13 +52,9 @@ function GlobalStoreContextProvider(props) {
             ...store,
             currentView: ViewTypes.USER,
             currentQuery: '',
-            loadedPlaylists: []
+            loadedPlaylists: [],
+            openedPlaylist: null
         })
-        // await store.clearLoadedLists();
-        // storeReducer({
-        //     type: "SET_VIEW",
-        //     payload: ViewTypes.USER
-        // });
     }
 
     store.setCurrentQuery = (newQuery) => {
@@ -94,10 +62,50 @@ function GlobalStoreContextProvider(props) {
             ...store,
             currentQuery: newQuery
         })
-        // storeReducer({
-        //     type: "SET_QUERY",
-        //     payload: newQuery
-        // })
+    }
+
+    store.setOpenedPlaylist = async (playlist) => {
+        // if(store.openedPlaylist) {
+        //     await api.updatePlaylistById(store.openedPlaylist._id, store.openedPlaylist);
+        // }
+        
+        setStore({
+            ...store,
+            openedPlaylist: playlist
+        })
+        tps.clearAllTransactions();
+    }
+
+    store.updateList = async (newPlaylist) => {
+        await api.updatePlaylistById(newPlaylist._id, newPlaylist);
+    }
+
+    store.deleteList = (playlistId) => {
+        let index = 0;
+        for(index; index < store.loadedPlaylists.length; index++) {
+            if(store.loadedPlaylists[index]._id === playlistId) {
+                break;
+            }
+        }
+        console.log(index);
+        let updatedLoadedPlaylists = store.loadedPlaylists;
+        updatedLoadedPlaylists.splice(index, 1);
+        console.log(updatedLoadedPlaylists);
+
+        if(store.openedPlaylist && store.openedPlaylist._id === playlistId) {
+            setStore({
+                ...store,
+                openedPlaylist: null,
+                loadedPlaylists: updatedLoadedPlaylists
+            })
+        }
+        else {
+            setStore({
+                ...store,
+                loadedPlaylists: updatedLoadedPlaylists
+            })
+        }
+        api.deletePlaylistById(playlistId)
     }
 
     store.createNewList = async () => {
@@ -108,13 +116,34 @@ function GlobalStoreContextProvider(props) {
             ownerUsername: auth.user.username,
             published: false,
             likes: [],
-            dislikes: []
+            dislikes: [],
+            comments: []
         });
         if(response.status === 200) {
             setStore({
                 ...store,
                 loadedPlaylists: await store.getOwnedLists()
             })
+        }
+    }
+
+    store.cloneList = async (playlist) => {
+        const response = await api.createList({
+            name: playlist.name,
+            songs: playlist.songs,
+            ownerEmail: auth.user.email,
+            ownerUsername: auth.user.username,
+            published: false,
+            likes: [],
+            dislikes: []
+        })
+        if(response.status === 200) {
+            if(store.currentView === ViewTypes.HOME) {
+                setStore({
+                    ...store,
+                    loadedPlaylists: await store.getOwnedLists()
+                })
+            }
         }
     }
 
@@ -126,21 +155,25 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.searchLists = async (query) => {
-        if(query === '') {
-            query = { };
-        }
         let response = null;
         switch(store.currentView) {
             case ViewTypes.HOME: {
-                response = await api.getPlaylists({ownerEmail: auth.user.email, name: query})
+                if(query === '') {
+                    query = { };
+                }
+                response = await api.getPlaylists({ownerEmail: auth.user.email, name: query});
                 break;
             }
             case ViewTypes.ALL: {
-                response = await api.getPlaylists({published: true, name: query})
+                if(query !== '') {
+                    response = await api.getPlaylists({published: true, name: query});
+                }
                 break;
             }
             case ViewTypes.USER: {
-                response = await api.getPlaylists({published: true, ownerEmail: query})
+                if(query !== '') {
+                    response = await api.getPlaylists({published: true, ownerUsername: query});
+                }
                 break;
             }
         }
@@ -153,6 +186,72 @@ function GlobalStoreContextProvider(props) {
             });
             return response.data.playlists;
         }
+    }
+
+    store.removeSong = (index) => {
+        let updatedPlaylist = store.openedPlaylist;
+        updatedPlaylist.songs.splice(index, 1);
+        setStore({
+            ...store,
+            openedPlaylist: updatedPlaylist
+        });
+    }
+
+    store.createSong = (index, song) => {
+        let updatedPlaylist = store.openedPlaylist;
+        updatedPlaylist.songs.splice(index, 0, song);
+        setStore({
+            ...store,
+            openedPlaylist: updatedPlaylist    
+        });
+    }
+
+    store.updateSong = (index, newSong) => {
+        let updatedPlaylist = store.openedPlaylist;
+        updatedPlaylist.songs.splice(index, 1, newSong);
+        setStore({
+            ...store,
+            openedPlaylist: updatedPlaylist
+        });
+    }
+
+    store.addCreateSongTransaction = () => {
+        let transaction = new CreateSong_Transaction(
+            store, 
+            store.openedPlaylist.songs.length, 
+            {
+                title: 'Untitled', 
+                artist:'?', 
+                youTubeId:'dQw4w9WgXcQ'
+            }
+        );
+        tps.addTransaction(transaction);
+    }
+
+    store.addRemoveSongTransaction = (index, song) => {
+        let transaction = new RemoveSong_Transaction(store, index, song)
+        tps.addTransaction(transaction);
+    }
+
+    store.addUpdateSongTransaction = (index, oldSong, newSong) => {
+        let transaction = new UpdateSong_Transaction(store, index, oldSong, newSong);
+        tps.addTransaction(transaction);
+    }
+
+    store.canUndo = () => {
+        return tps.hasTransactionToUndo();
+    }
+
+    store.undo = () => {
+        tps.undoTransaction();
+    }
+
+    store.canRedo = () => {
+        return tps.hasTransactionToRedo();
+    }
+
+    store.redo = () => {
+        tps.doTransaction();
     }
 
     return (
