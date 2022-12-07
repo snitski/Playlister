@@ -17,7 +17,42 @@ export const getPlaylists = (query) => {
 
 export const updatePlaylistById = (id, playlist) => {
     return api.put(`/playlist/${id}`, {
+        type: 'overwrite',
         playlist : playlist
+    })
+}
+
+export const renamePlaylistById = (id, newName) => {
+    return api.put(`/playlist/${id}`, {
+        type: 'rename',
+        newName: newName
+    })
+}
+
+export const likePlaylistById = (playlistId, username) => {
+    return api.put(`playlist/${playlistId}`, {
+        type: 'like',
+        username: username
+    })
+}
+
+export const dislikePlaylistById = (playlistId, username) => {
+    return api.put(`playlist/${playlistId}`, {
+        type: 'dislike',
+        username: username
+    })
+}
+
+export const commentOnPlaylistById = (playlistId, comment) => {
+    return api.put(`playlist/${playlistId}`, {
+        type: 'comment',
+        comment: comment
+    })
+}
+
+export const listenToPlaylistById = (id) => {
+    return api.put(`playlist/${id}`, {
+        type: 'listen'
     })
 }
 
@@ -25,7 +60,12 @@ const apis = {
     createList,
     deletePlaylistById,
     getPlaylists,
-    updatePlaylistById
+    updatePlaylistById,
+    renamePlaylistById,
+    likePlaylistById,
+    dislikePlaylistById,
+    commentOnPlaylistById,
+    listenToPlaylistById
 }
 
 export default apis

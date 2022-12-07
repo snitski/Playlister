@@ -1,4 +1,4 @@
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect } from 'react';
 import {
     IconButton,
     Input,
@@ -21,7 +21,11 @@ export default function NavigationBar() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [popupMenuAnchor, setPopupMenuAnchor] = useState(null);
-    const [searchText, setSearchText] = useState('');
+    const [searchText, setSearchText] = useState(store.currentQuery);
+
+    useEffect(() => {
+        setSearchText(store.currentQuery)
+    }, [store])
 
     const handleMenuOpen = (event) => {
         setPopupMenuAnchor(event.target)

@@ -33,7 +33,7 @@ export default function VideoPlayer( ) {
         }
     }, [store])
 
-    if(!store.openedPlaylist) return '';
+    if(!store.openedPlaylist || store.openedPlaylist.songs.length === 0) return '';
 
     let playlist = []
     try {
@@ -123,6 +123,8 @@ export default function VideoPlayer( ) {
     const handlePlayButton = () => {
         setPlaying(true);
         playerReference.playVideo();
+        store.listenToList(store.openedPlaylist);
+        store.openedPlaylist.listens++;
     }
 
     const handleStopButton = () => {

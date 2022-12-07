@@ -126,11 +126,20 @@ getPlaylists = async (req, res) => {
 
 updatePlaylist = async (req, res) => {
     const body = req.body
+    const type = req.body.type;
+
+    console.log(req.body);
 
     if (!body) {
         return res.status(400).json({
             success: false,
-            errorMessage: 'You must provide a body to update',
+            errorMessage: 'You must provide a body to update'
+        })
+    }
+    if(!type) {
+        return res.status(400).jason({
+            success: false,
+            errorMessage: 'You must provide a reason to update'
         })
     }
 
@@ -141,48 +150,255 @@ updatePlaylist = async (req, res) => {
             errorMessage: 'Playlist not found!',
         })
     }
+    switch(type) {
+        case 'rename': {
+            const user = await User.findOne({ email: existingPlaylist.ownerEmail }).exec();
+            if(user._id == req.userId) {
 
-    const user = await User.findOne({ email: existingPlaylist.ownerEmail }).exec();
-    if(user._id == req.userId) {
-        existingPlaylist.name = body.playlist.name;
-        existingPlaylist.songs = body.playlist.songs;
-        existingPlaylist.likes = body.playlist.likes;
-        existingPlaylist.dislikes = body.playlist.dislikes;
-        existingPlaylist.published = body.playlist.published;
-        existingPlaylist.save().then(() => {
-            return res.status(200).json({
-                success: true,
-                id: existingPlaylist._id,
+                let newName = body.newName;
+
+                const duplicatePlaylist = await Playlist.findOne({ name: newName, ownerEmail: existingPlaylist.ownerEmail }).exec();
+                if(duplicatePlaylist) {
+                    const similarPlaylists = await Playlist.find({ name: { '$regex': new RegExp(`^${newName} \\([0-9]+\\)$`, 'g') }, ownerEmail: existingPlaylist.ownerEmail }).exec();
+                    if(similarPlaylists) {
+                        let lowestNum = 1;
+                        for(let i = 0; i < similarPlaylists.length; i++) {
+                            let currentNum = similarPlaylists[i].name.match(/\([0-9]+\)$/g)[0];
+                            currentNum = Number(currentNum.substring(1, currentNum.length-1));
+                            if(currentNum < lowestNum && currentNum > 0) {
+                                lowestNum = currentNum
+                            }
+                            else if(currentNum === lowestNum) {
+                                lowestNum++;
+                            }
+                        }
+                        newName += ` (${lowestNum})`;
+                    }
+                    else {
+                        newName += ' (1)';
+                    }
+                }
+                
+                existingPlaylist.name = newName;
+                console.log(newName)
+                existingPlaylist.save().then(() => {
+                    return res.status(200).json({
+                        success: true,
+                        newName: newName,
+                    })
+                })
+                .catch(err => {
+                    return res.status(400).json({
+                        success: false,
+                        errorMessage: err
+                    })
+                })
+            }
+            else {
+                return res.status(400).json({ 
+                    success: false, errorMessage: 
+                    "Authentication error" 
+                });
+            }
+            break;
+        }
+        case 'overwrite': {
+            const user = await User.findOne({ email: existingPlaylist.ownerEmail }).exec();
+            if(user._id == req.userId) {
+                existingPlaylist.songs = body.playlist.songs;
+                existingPlaylist.likes = body.playlist.likes;
+                existingPlaylist.dislikes = body.playlist.dislikes;
+                existingPlaylist.published = body.playlist.published;
+                existingPlaylist.comments = body.playlist.comments;
+                existingPlaylist.listens = body.playlist.listens;
+                existingPlaylist.publishedDate = body.playlist.publishedDate;
+                existingPlaylist.save().then(() => {
+                    return res.status(200).json({
+                        success: true,
+                        playlist: existingPlaylist,
+                    })
+                })
+                .catch(err => {
+                    return res.status(400).json({
+                        success: false,
+                        errorMessage: err
+                    })
+                })
+            }
+            else {
+                return res.status(400).json({ 
+                    success: false, errorMessage: 
+                    "Authentication error" 
+                });
+            }
+            break;
+        }
+        case 'like': {
+            const user = await User.findOne({ username: body.username }).exec();
+            if(user && user._id == req.userId) {
+                let likes = existingPlaylist.likes;
+                let dislikes = existingPlaylist.dislikes;
+
+                if(likes.includes(body.username)) {
+                    let index = likes.indexOf(body.username);
+                    likes.splice(index, 1);
+                }
+                else {
+                    likes.push(body.username)
+                    if(dislikes.includes(body.username)) {
+                        let index = dislikes.indexOf(body.username);
+                        dislikes.splice(index, 1);
+                    }
+                }
+
+                existingPlaylist.likes = likes;
+                existingPlaylist.dislikes = dislikes;
+                existingPlaylist.save().then(() => {
+                    return res.status(200).json({
+                            success: true,
+                            id: existingPlaylist._id,
+                        })
+                    })
+                .catch(err => {
+                    return res.status(400).json({
+                        success: false,
+                        errorMessage: err
+                    })
+                })
+            }
+            else {
+                return res.status(400).json({ 
+                    success: false, errorMessage: 
+                    "Authentication error" 
+                });
+            }
+            break;
+        }
+        case 'dislike': {
+            const user = await User.findOne({ username: body.username }).exec();
+            if(user && user._id == req.userId) {
+                let likes = existingPlaylist.likes;
+                let dislikes = existingPlaylist.dislikes;
+
+                if(dislikes.includes(body.username)) {
+                    let index = dislikes.indexOf(body.username);
+                    dislikes.splice(index, 1);
+                }
+                else {
+                    dislikes.push(body.username)
+                    if(likes.includes(body.username)) {
+                        let index = likes.indexOf(body.username);
+                        likes.splice(index, 1);
+                    }
+                }
+
+                existingPlaylist.likes = likes;
+                existingPlaylist.dislikes = dislikes;
+                existingPlaylist.save().then(() => {
+                    return res.status(200).json({
+                            success: true,
+                            id: existingPlaylist._id,
+                        })
+                    })
+                .catch(err => {
+                    return res.status(400).json({
+                        success: false,
+                        errorMessage: err
+                    })
+                })
+            }
+            else {
+                return res.status(400).json({ 
+                    success: false, errorMessage: 
+                    "Authentication error" 
+                });
+            }
+            break;
+        }
+        case 'comment': {
+            const user = await User.findOne({ username: body.comment.username }).exec();
+            if(user && user._id == req.userId) {
+                existingPlaylist.comments.push(body.comment);
+
+                existingPlaylist.save().then(() => {
+                    return res.status(200).json({
+                            success: true,
+                            id: existingPlaylist._id,
+                        })
+                    })
+                .catch(err => {
+                    return res.status(400).json({
+                        success: false,
+                        errorMessage: err
+                    })
+                })
+            }
+            else {
+                return res.status(400).json({ 
+                    success: false, errorMessage: 
+                    "Authentication error" 
+                });
+            }
+            break;
+        }
+        case 'listen': {
+            existingPlaylist.listens++;
+            existingPlaylist.save().then(() => {
+                return res.status(200).json({
+                        success: true,
+                        id: existingPlaylist._id,
+                    })
+                })
+            .catch(err => {
+                return res.status(400).json({
+                    success: false,
+                    errorMessage: err
+                })
             })
-        })
-        .catch(err => {
-            return res.status(400).json({
-                success: false,
-                errorMessage: err
-            })
-        })
+        }
     }
-    else {
-        existingPlaylist.likes = body.playlist.likes;
-        existingPlaylist.dislikes = body.playlist.dislikes;
-        existingPlaylist.published = body.playlist.published;
-        existingPlaylist.save().then(() => {
-            return res.status(200).json({
-                success: true,
-                id: existingPlaylist._id,
-            })
-        })
-        .catch(err => {
-            return res.status(400).json({
-                success: false,
-                errorMessage: err
-            })
-        });
-        // return res.status(400).json({ 
-        //     success: false, errorMessage: 
-        //     "Authentication error" 
-        // });
-    }
+
+    // const user = await User.findOne({ email: existingPlaylist.ownerEmail }).exec();
+    // if(user._id == req.userId) {
+    //     existingPlaylist.name = body.playlist.name;
+    //     existingPlaylist.songs = body.playlist.songs;
+    //     existingPlaylist.likes = body.playlist.likes;
+    //     existingPlaylist.dislikes = body.playlist.dislikes;
+    //     existingPlaylist.published = body.playlist.published;
+    //     existingPlaylist.comments = body.playlist.comments;
+    //     existingPlaylist.save().then(() => {
+    //         return res.status(200).json({
+    //             success: true,
+    //             id: existingPlaylist._id,
+    //         })
+    //     })
+    //     .catch(err => {
+    //         return res.status(400).json({
+    //             success: false,
+    //             errorMessage: err
+    //         })
+    //     })
+    // }
+    // else {
+    //     existingPlaylist.likes = body.playlist.likes;
+    //     existingPlaylist.dislikes = body.playlist.dislikes;
+    //     existingPlaylist.comments = body.playlist.comments;
+    //     existingPlaylist.save().then(() => {
+    //         return res.status(200).json({
+    //             success: true,
+    //             id: existingPlaylist._id,
+    //         })
+    //     })
+    //     .catch(err => {
+    //         return res.status(400).json({
+    //             success: false,
+    //             errorMessage: err
+    //         })
+    //     });
+    //     // return res.status(400).json({ 
+    //     //     success: false, errorMessage: 
+    //     //     "Authentication error" 
+    //     // });
 }
 module.exports = {
     createPlaylist,

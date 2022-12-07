@@ -34,36 +34,44 @@ export default function ListCard({ playlist, index }) {
         if(!liked) {
             setLiked(true);
             playlist.likes.push(auth.user.username);
+            // store.toggleLikeList(playlist);
         }
         else {
             setLiked(false);
             let index = playlist.likes.indexOf(auth.user.username);
             playlist.likes.splice(index, 1);
+            // store.toggleLikeList(playlist);
         }
         if(disliked) {
             setDisliked(false);
             let index = playlist.dislikes.indexOf(auth.user.username);
             playlist.dislikes.splice(index, 1);
+            // store.toggleDislikeList(playlist);
         }
-        store.updateList(playlist);
+        store.toggleLikeList(playlist);
+        // store.updateList(playlist);
     }
 
     const handleDislikeButton = () => {
         if(!disliked) {
             setDisliked(true);
             playlist.dislikes.push(auth.user.username);
+            // store.toggleDislikeList(playlist);
         }
         else {
             setDisliked(false);
             let index = playlist.dislikes.indexOf(auth.user.username);
             playlist.dislikes.splice(index, 1);
+            // store.toggleDislikeList(playlist);
         }
         if(liked) {
             setLiked(false);
             let index = playlist.likes.indexOf(auth.user.username);
             playlist.likes.splice(index, 1);
+            // store.toggleLikeList(playlist);
         }
-        store.updateList(playlist);
+        store.toggleDislikeList(playlist);
+        // store.updateList(playlist);
     }
 
     const handleExpandButton = () => {
@@ -84,12 +92,17 @@ export default function ListCard({ playlist, index }) {
         }
     }
 
-    const handleKeyPress = (event) => {
+    const handleUsernameClick = () => {
+        store.goToUser(playlist.ownerUsername);
+    }
+
+    const handleKeyPress = async (event) => {
         if(event.key === 'Enter' && editingName) {
             setEditingName(false);
             if(playlist.name !== playlistName) {
-                playlist.name = playlistName;
-                store.updateList(playlist);
+                const updatedName = await store.renameList(playlist, playlistName);
+                setPlaylistName(updatedName);
+                playlist.name = updatedName;
             }
         }
     }
@@ -141,7 +154,7 @@ export default function ListCard({ playlist, index }) {
                         onClick={handleClick}
                     >{playlistName}</Typography>
                 }
-                <Typography>{'by: ' +playlist.ownerUsername}</Typography>
+                <Typography>by: <span className='username-link' onClick={handleUsernameClick}>{playlist.ownerUsername}</span></Typography>
             </div>
             
             { playlist.published ? [
@@ -160,7 +173,11 @@ export default function ListCard({ playlist, index }) {
                         disabled={!auth.loggedIn}
                     ><ThumbDown/></IconButton>
                     <Typography>{getDislikes()}</Typography>
-                </div>
+                </div>,
+            ]:''}
+            { playlist.published && !expanded ? [
+                <Typography sx={{display: 'flex', alignItems:'center', gridRow:'3/4'}}> Published: {playlist.publishedDate ? new Date(playlist.publishedDate).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' }) : ''} </Typography>,
+                <Typography sx={{display: 'flex', alignItems:'center', gridRow:'3/4'}}> Listens: {playlist.listens} </Typography>
             ]:''}
 
             { expanded ? 

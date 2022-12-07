@@ -23,7 +23,9 @@ const playlistSchema = new Schema(
         comments: { type: [{
             username: String,
             text: String
-        }], default: []}
+        }], default: []},
+        listens: {type: Number, default: 0},
+        publishedDate: {type: Date, default: null}
     },
     { timestamps: true },
 )

@@ -46,6 +46,7 @@ export default function SongListWrapper({ playlist }) {
 
     const handlePublishPlaylist = () => {
         playlist.published = true;
+        playlist.publishedDate = Date.now();
         setPublished(true);
         store.updateList(playlist);
     }

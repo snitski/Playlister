@@ -179,6 +179,11 @@ a {
     border-radius: 5px;
 }
 
+.username-link {
+    color: blue;
+    cursor: pointer;
+}
+
 .ratings {
     display: flex;
     align-items: center;

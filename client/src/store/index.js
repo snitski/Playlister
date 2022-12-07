@@ -1,5 +1,4 @@
 import { createContext, useContext, useState } from 'react'
-import { useNavigate } from 'react-router-dom'
 import AuthContext from '../auth';
 import api from './axios-api';
 import jsTPS from '../common/jsTPS'
@@ -57,6 +56,19 @@ function GlobalStoreContextProvider(props) {
         })
     }
 
+    store.goToUser = async (username) => {
+        const response = await api.getPlaylists({published: true, ownerUsername: username})
+        if(response.status === 200) {
+            setStore({
+                ...store,
+                currentView: ViewTypes.USER,
+                currentQuery: username,
+                loadedPlaylists: response.data.playlists,
+                openedPlaylist: null
+            })
+        }
+    }
+
     store.setCurrentQuery = (newQuery) => {
         setStore({
             ...store,
@@ -73,7 +85,34 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.updateList = async (newPlaylist) => {
-        await api.updatePlaylistById(newPlaylist._id, newPlaylist);
+        const response = await api.updatePlaylistById(newPlaylist._id, newPlaylist);
+        if(response.status === 200) {
+            return response.data.playlist;
+        }
+    }
+
+    store.renameList = async (playlist, newName) => {
+        const response = await api.renamePlaylistById(playlist._id, newName);
+        console.log(response);
+        if(response.status === 200) {
+            return response.data.newName;
+        }
+    }
+
+    store.toggleLikeList = async (playlist) => {
+        await api.likePlaylistById(playlist._id, auth.user.username);
+    }
+
+    store.toggleDislikeList = async (playlist) => {
+        await api.dislikePlaylistById(playlist._id, auth.user.username);
+    }
+
+    store.commentOnList = async (playlist, comment) => {
+        await api.commentOnPlaylistById(playlist._id, comment);
+    }
+
+    store.listenToList = async (playlist) => {
+        await api.listenToPlaylistById(playlist._id);
     }
 
     store.deleteList = (playlistId) => {
