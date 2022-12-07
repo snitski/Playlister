@@ -94,6 +94,17 @@ a {
     border-radius: 5px;
 }
 
+#youtube-player-area {
+    width: 100%;
+    height: 100%;
+    padding: 15px;
+
+    margin-top: 5px;
+
+    background-color: rgb(226, 226, 226);
+    border-radius: 5px;
+}
+
 #list-card-wrapper {
     position: absolute;
     top: 3%;

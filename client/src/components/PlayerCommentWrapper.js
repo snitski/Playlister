@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { Tab, Box } from '@mui/material';
+import { Tab } from '@mui/material';
 import { 
     TabContext,
     TabList,
     TabPanel
 } from '@mui/lab';
 import VideoPlayer from './VideoPlayer';
+import CommentSection from './CommentSection';
 
 export default function PlayerCommentWrapper() {
     const [value, setValue] = useState('1');
@@ -19,8 +20,8 @@ export default function PlayerCommentWrapper() {
                     <Tab label="Player" value="1" />
                     <Tab label="Comments" value="2" />
                 </TabList>
-                <TabPanel value="1"><VideoPlayer /></TabPanel>
-                <TabPanel value="2">Comment Section</TabPanel>
+                <TabPanel value="1" className='center-children'><VideoPlayer /></TabPanel>
+                <TabPanel value="2"><CommentSection /></TabPanel>
             </TabContext>
         </div>
     )
