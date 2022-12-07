@@ -141,8 +141,8 @@ export default function VideoPlayer( ) {
     }
 
     return (
-        <div className='center-children' style={{flexDirection: 'column'}}>
-            <div id='youtube-player-area' className='center-children'>
+        <div>
+            <div className='youtube-player-content center-children'>
                 <YouTube 
                     videoId={playlist[currentSong]}
                     opts={playerOptions}
@@ -150,12 +150,12 @@ export default function VideoPlayer( ) {
                     onStateChange={onPlayerStateChange} 
                 />
             </div>
-            <div id='youtube-player-area' >
+            <div className='youtube-player-content' >
                 <Typography sx={{fontWeight: 'bold'}}>{store.openedPlaylist.name}</Typography>
                 <Typography>Song #{currentSong + 1}:</Typography>
                 <Typography sx={{fontWeight: 'bold'}}>{store.openedPlaylist.songs[currentSong].title} by {store.openedPlaylist.songs[currentSong].artist}</Typography>
             </div>
-            <div className='center-children' id='youtube-player-area' >
+            <div className='center-children youtube-player-content' >
                 <IconButton onClick={handleFastRewindButton}><FastRewind /></IconButton>
                 {playing ? <IconButton onClick={handleStopButton}><Pause /></IconButton> :
                 <IconButton onClick={handlePlayButton}><PlayArrow /></IconButton>}
