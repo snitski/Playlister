@@ -3,12 +3,15 @@ import {
     Button
 } from '@mui/material'
 import { useContext } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../auth';
+import GlobalStoreContext from '../store';
 
 export default function SplashScreen() {
     const description = 'Where you can create, play, and share YouTube playlists all in one place. Playlister comes with its own standalone features for the best experience!';
     const { auth } = useContext(AuthContext);
+    const { store } = useContext(GlobalStoreContext);
+    const navigate = useNavigate();
 
     let buttons = [
         <Link to='/login'>
@@ -32,20 +35,32 @@ export default function SplashScreen() {
     ];
 
     if(auth.loggedIn) {
+        // buttons = [
+        //     <Link to='/login' style={{gridColumn: '1/3'}}>
+        //         <Button
+        //             variant='contained'
+        //             sx={{width: '100%'}}
+        //             onClick={() => {auth.logoutUser()}}
+        //         >Switch Account</Button>
+        //     </Link>,
+        //     <Link to='/home' style={{gridColumn: '1/3'}}>
+        //         <Button
+        //             variant='contained'
+        //             sx={{width: '100%'}}
+        //         >View Playlists</Button>
+        //     </Link>
+        // ];
         buttons = [
-            <Link to='/login' style={{gridColumn: '1/3'}}>
-                <Button
-                    variant='contained'
-                    sx={{width: '100%'}}
-                >Switch Accounts</Button>
-            </Link>,
-            <Link to='/home' style={{gridColumn: '1/3'}}>
-                <Button
-                    variant='contained'
-                    sx={{width: '100%'}}
-                >View Playlists</Button>
-            </Link>
-        ];
+            <Button
+                variant='contained'
+                sx={{gridColumn: '1/3'}}
+                onClick={async () => {await auth.logoutUser(); navigate('/login'); store.goToAllView()}}
+            >Switch Account</Button>,
+            <Button
+                variant='contained'
+                sx={{gridColumn: '1/3'}}
+            >View Playlists</Button>
+        ]
     }
 
     return (

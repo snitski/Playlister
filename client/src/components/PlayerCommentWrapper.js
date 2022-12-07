@@ -5,6 +5,7 @@ import {
     TabList,
     TabPanel
 } from '@mui/lab';
+import VideoPlayer from './VideoPlayer';
 
 export default function PlayerCommentWrapper() {
     const [value, setValue] = useState('1');
@@ -18,7 +19,7 @@ export default function PlayerCommentWrapper() {
                     <Tab label="Player" value="1" />
                     <Tab label="Comments" value="2" />
                 </TabList>
-                <TabPanel value="1">Youtube Player</TabPanel>
+                <TabPanel value="1"><VideoPlayer /></TabPanel>
                 <TabPanel value="2">Comment Section</TabPanel>
             </TabContext>
         </div>
