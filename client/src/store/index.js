@@ -15,6 +15,14 @@ export const ViewTypes = {
     USER: 2
 }
 
+export const SortTypes = {
+    NAME: {name: 1},
+    DATE: {publishedDate: -1},
+    LISTENS: {listens: -1},
+    LIKES: {numLikes: -1},
+    DISLIKES: {numDislikes: -1}
+}
+
 const tps = new jsTPS();
 
 function GlobalStoreContextProvider(props) {
@@ -23,7 +31,8 @@ function GlobalStoreContextProvider(props) {
         currentView: ViewTypes.ALL,
         currentQuery: '',
         loadedPlaylists: [],
-        openedPlaylist: null
+        openedPlaylist: null,
+        sortType: SortTypes.NAME
     });
 
     store.goToHomeView = async () => {
@@ -76,6 +85,46 @@ function GlobalStoreContextProvider(props) {
         })
     }
 
+    store.setNameSort = () => {
+        // setStore({
+        //     ...store,
+        //     sortType: SortTypes.NAME
+        // })
+        store.searchLists(store.currentQuery, SortTypes.NAME)
+    }
+
+    store.setDateSort = () => {
+        // setStore({
+        //     ...store,
+        //     sortType: SortTypes.DATE
+        // })
+        store.searchLists(store.currentQuery, SortTypes.DATE)
+    }
+
+    store.setListenSort = () => {
+        // setStore({
+        //     ...store,
+        //     sortType: SortTypes.LISTENS
+        // })
+        store.searchLists(store.currentQuery, SortTypes.LISTENS)
+    }
+
+    store.setLikeSort = () => {
+        // setStore({
+        //     ...store,
+        //     sortType: SortTypes.LIKES
+        // })
+        store.searchLists(store.currentQuery, SortTypes.LIKES)
+    }
+    
+    store.setDislikeSort = () => {
+        // setStore({
+        //     ...store,
+        //     sortType: SortTypes.DISLIKES
+        // })
+        store.searchLists(store.currentQuery, SortTypes.DISLIKES)
+    }
+
     store.setOpenedPlaylist = async (playlist) => {        
         setStore({
             ...store,
@@ -101,10 +150,16 @@ function GlobalStoreContextProvider(props) {
 
     store.toggleLikeList = async (playlist) => {
         await api.likePlaylistById(playlist._id, auth.user.username);
+        if(store.sortType == SortTypes.LIKES || store.sortType == SortTypes.DISLIKES) {
+            store.searchLists(store.currentQuery, store.sortType);
+        }
     }
 
     store.toggleDislikeList = async (playlist) => {
         await api.dislikePlaylistById(playlist._id, auth.user.username);
+        if(store.sortType == SortTypes.LIKES || store.sortType == SortTypes.DISLIKES) {
+            store.searchLists(store.currentQuery, store.sortType);
+        }
     }
 
     store.commentOnList = async (playlist, comment) => {
@@ -113,6 +168,9 @@ function GlobalStoreContextProvider(props) {
 
     store.listenToList = async (playlist) => {
         await api.listenToPlaylistById(playlist._id);
+        if(store.sortType == SortTypes.LISTENS) {
+            store.searchLists(store.currentQuery, store.sortType);
+        }
     }
 
     store.deleteList = (playlistId) => {
@@ -183,31 +241,35 @@ function GlobalStoreContextProvider(props) {
     }
 
     store.getOwnedLists = async () => {
-        const response = await api.getPlaylists({ownerEmail: auth.user.email})
+        const response = await api.getPlaylists({ownerEmail: auth.user.email}, store.sortType)
         if(response.status === 200) {
             return response.data.playlists
         }
     }
 
-    store.searchLists = async (query) => {
+    store.searchLists = async (query, sort) => {
         let response = null;
+        if(!sort) {
+            sort = store.sortType;
+        }
         switch(store.currentView) {
             case ViewTypes.HOME: {
+                let q = query;
                 if(query === '') {
-                    query = { };
+                    q = { };
                 }
-                response = await api.getPlaylists({ownerEmail: auth.user.email, name: query});
+                response = await api.getPlaylists({ownerEmail: auth.user.email, name: q}, sort);
                 break;
             }
             case ViewTypes.ALL: {
                 if(query !== '') {
-                    response = await api.getPlaylists({published: true, name: query});
+                    response = await api.getPlaylists({published: true, name: query}, sort);
                 }
                 break;
             }
             case ViewTypes.USER: {
                 if(query !== '') {
-                    response = await api.getPlaylists({published: true, ownerUsername: query});
+                    response = await api.getPlaylists({published: true, ownerUsername: query}, sort);
                 }
                 break;
             }
@@ -217,6 +279,7 @@ function GlobalStoreContextProvider(props) {
             setStore({
                 ...store,
                 currentQuery: query,
+                sortType: sort,
                 loadedPlaylists: response.data.playlists
             });
             return response.data.playlists;

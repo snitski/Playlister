@@ -28,6 +28,8 @@ export default function ListCard({ playlist, index }) {
     useEffect(() => {
         setExpanded(store.openedPlaylist && store.openedPlaylist._id === playlist._id);
         setPlaylistName(store.loadedPlaylists[index].name);
+        setLiked(playlist.likes.includes(auth.user.username))
+        setDisliked(playlist.dislikes.includes(auth.user.username))
     }, [store]);
 
     const handleLikeButton = () => {
@@ -99,10 +101,15 @@ export default function ListCard({ playlist, index }) {
     const handleKeyPress = async (event) => {
         if(event.key === 'Enter' && editingName) {
             setEditingName(false);
-            if(playlist.name !== playlistName) {
-                const updatedName = await store.renameList(playlist, playlistName);
+            setPlaylistName(playlistName.trim())
+            if(playlistName.trim() === '') {
+                setPlaylistName(playlist.name);
+            }
+            else if(playlist.name !== playlistName.trim()) {
+                const updatedName = await store.renameList(playlist, playlistName.trim());
                 setPlaylistName(updatedName);
                 playlist.name = updatedName;
+                store.searchLists(store.currentQuery);
             }
         }
     }

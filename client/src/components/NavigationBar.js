@@ -15,13 +15,13 @@ import {
 } from '@mui/icons-material'
 import AuthContext from '../auth';
 import GlobalStoreContext from '../store';
-import { ViewTypes } from '../store';
+import { ViewTypes, SortTypes } from '../store';
 
 export default function NavigationBar() {
     const { auth } = useContext(AuthContext);
     const { store } = useContext(GlobalStoreContext);
     const [popupMenuAnchor, setPopupMenuAnchor] = useState(null);
-    const [searchText, setSearchText] = useState(store.currentQuery);
+    const [searchText, setSearchText] = useState('');
 
     useEffect(() => {
         setSearchText(store.currentQuery)
@@ -60,6 +60,31 @@ export default function NavigationBar() {
         }
     }
 
+    const handleNameSort = () => {
+        store.setNameSort();
+        setPopupMenuAnchor(null);
+    }
+
+    const handleDateSort = () => {
+        store.setDateSort();
+        setPopupMenuAnchor(null);
+    }
+
+    const handleListenSort = () => {
+        store.setListenSort();
+        setPopupMenuAnchor(null);
+    }
+
+    const handleLikeSort = () => {
+        store.setLikeSort();
+        setPopupMenuAnchor(null);
+    }
+
+    const handleDislikeSort = () => {
+        store.setDislikeSort();
+        setPopupMenuAnchor(null);
+    }
+
     return (
         <div id='nav-bar' className='content-card'>
             <IconButton 
@@ -94,11 +119,11 @@ export default function NavigationBar() {
 
             <IconButton size='large' onClick={handleMenuOpen}><Sort /></IconButton>
             <Menu anchorEl={popupMenuAnchor} open={popupMenuAnchor !== null} onClose={handleMenuClose}>
-                <MenuItem>Name (A-Z)</MenuItem>
-                <MenuItem>Publish Date (Newest-Oldest)</MenuItem>
-                <MenuItem>Listens (High-Low)</MenuItem>
-                <MenuItem>Likes (High-Low)</MenuItem>
-                <MenuItem>Dislikes (High-Low)</MenuItem>
+                <MenuItem onClick={handleNameSort}>Name (A-Z)</MenuItem>
+                <MenuItem onClick={handleDateSort}>Publish Date (Newest-Oldest)</MenuItem>
+                <MenuItem onClick={handleListenSort}>Listens (High-Low)</MenuItem>
+                <MenuItem onClick={handleLikeSort}>Likes (High-Low)</MenuItem>
+                <MenuItem onClick={handleDislikeSort}>Dislikes (High-Low)</MenuItem>
             </Menu>
         </div>
     )

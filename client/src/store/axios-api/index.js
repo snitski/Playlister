@@ -11,8 +11,8 @@ export const createList = (playlistData) => {
 export const deletePlaylistById = (id) => api.delete(`/playlist/${id}`)
 
 
-export const getPlaylists = (query) => {
-    return api.get(`/playlists/`, { params: query });
+export const getPlaylists = (query, sort) => {
+    return api.get(`/playlists/`, { params: { query: query, sort: sort}});
 }
 
 export const updatePlaylistById = (id, playlist) => {

@@ -19,7 +19,9 @@ const playlistSchema = new Schema(
         }], required: true },
         published: { type: Boolean, default: false },
         likes: { type: [String], default: [] },
+        numLikes: { type: Number, default: 0},
         dislikes: { type: [String], default: [] }, 
+        numDislikes: {type: Number, default: 0},
         comments: { type: [{
             username: String,
             text: String

@@ -108,15 +108,18 @@ deletePlaylist = async (req, res) => {
 }
 
 getPlaylists = async (req, res) => {
-    if(req.query.name) {
-        req.query.name = { '$regex': new RegExp(`${req.query.name}` , 'g') };
+    const { query, sort } = req.query;
+    if(query.name) {
+        query.name = { '$regex': new RegExp(`${query.name}` , 'g') };
     }
-    else if(req.query.ownerUsername) {
-        req.query.ownerUsername = { '$regex': new RegExp(`${req.query.ownerUsername}` , 'g') };
+    else if(query.ownerUsername) {
+        query.ownerUsername = { '$regex': new RegExp(`${query.ownerUsername}` , 'g') };
     }
-    console.log(req.query);
     try {
-        const foundPlaylists = await Playlist.find(req.query).exec();
+        console.log(query);
+        console.log(sort);
+        const foundPlaylists = await Playlist.find(query).collation({locale: "en" }).sort(sort).exec();
+        console.log(foundPlaylists);
         return res.status(200).json({ success: true, playlists: foundPlaylists});
     }
     catch(error) {
@@ -206,8 +209,6 @@ updatePlaylist = async (req, res) => {
             const user = await User.findOne({ email: existingPlaylist.ownerEmail }).exec();
             if(user._id == req.userId) {
                 existingPlaylist.songs = body.playlist.songs;
-                existingPlaylist.likes = body.playlist.likes;
-                existingPlaylist.dislikes = body.playlist.dislikes;
                 existingPlaylist.published = body.playlist.published;
                 existingPlaylist.comments = body.playlist.comments;
                 existingPlaylist.listens = body.playlist.listens;
@@ -253,6 +254,8 @@ updatePlaylist = async (req, res) => {
 
                 existingPlaylist.likes = likes;
                 existingPlaylist.dislikes = dislikes;
+                existingPlaylist.numLikes = likes.length;
+                existingPlaylist.numDislikes = dislikes.length;
                 existingPlaylist.save().then(() => {
                     return res.status(200).json({
                             success: true,
@@ -294,6 +297,8 @@ updatePlaylist = async (req, res) => {
 
                 existingPlaylist.likes = likes;
                 existingPlaylist.dislikes = dislikes;
+                existingPlaylist.numLikes = likes.length;
+                existingPlaylist.numDislikes = dislikes.length;
                 existingPlaylist.save().then(() => {
                     return res.status(200).json({
                             success: true,
