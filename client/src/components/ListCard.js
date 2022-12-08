@@ -28,8 +28,10 @@ export default function ListCard({ playlist, index }) {
     useEffect(() => {
         setExpanded(store.openedPlaylist && store.openedPlaylist._id === playlist._id);
         setPlaylistName(store.loadedPlaylists[index].name);
-        setLiked(playlist.likes.includes(auth.user.username))
-        setDisliked(playlist.dislikes.includes(auth.user.username))
+        if(auth.loggedIn) {
+            setLiked(playlist.likes.includes(auth.user.username))
+            setDisliked(playlist.dislikes.includes(auth.user.username))
+        }
     }, [store]);
 
     const handleLikeButton = () => {
@@ -89,7 +91,7 @@ export default function ListCard({ playlist, index }) {
     }
 
     const handleClick = (event) => {
-        if(ownedPlaylist && event.detail === 2) {
+        if(ownedPlaylist && !playlist.published && event.detail === 2) {
             setEditingName(true);
         }
     }

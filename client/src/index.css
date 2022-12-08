@@ -101,6 +101,8 @@ a {
     height: 100%;
 
     z-index: 850;
+
+    overflow: auto;
 }
 
 .youtube-player-content {
@@ -126,8 +128,6 @@ a {
 #comment-area-wrapper {
     position: absolute;
     top:0px;
-    /* left: 3%;
-    width: 94%; */
     width: 100%;
     height: 100%;
 

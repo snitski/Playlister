@@ -15,7 +15,7 @@ export default function PlayerCommentWrapper() {
 
   return (
     <div className='content-card'>
-        <Tabs value={value} onChange={handleChange} centered sx={{position:'relative', zIndex:'900'}}>
+        <Tabs value={value} onChange={handleChange} centered sx={{position:'relative', zIndex:'900', backgroundColor:'white', borderRadius:'5px'}}>
             <Tab label="Player" />
             <Tab label="Comments" />
         </Tabs>

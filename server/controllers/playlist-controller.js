@@ -58,8 +58,6 @@ createPlaylist = (req, res) => {
             return res.status(400).json({ success: false, errorMessage: err })
         }
 
-        user.playlists.push(playlist._id);
-
         await user.save();
         try {
             await playlist.save();
