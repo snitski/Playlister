@@ -17,11 +17,9 @@ export default function VideoPlayer( ) {
     const [ playerReference, setPlayerReference ] = useState(null);
     const [ currentSong, setCurrentSong ] = useState(0);
     const [ playing, setPlaying ] = useState(false);
-    // let currentSong = 0;
 
     useEffect(() => {
         try {
-            // currentSong = 0;
             setCurrentSong(0);
             setPlaying(false);
             if(playerReference && store.openedPlaylist) {
@@ -65,18 +63,14 @@ export default function VideoPlayer( ) {
     }
 
     const incSong = () => {
-        // currentSong++;
-        // currentSong = currentSong % playlist.length;
         setCurrentSong((currentSong + 1) % playlist.length);
     }
 
     const decSong = () => {
         if(currentSong == 0) {
-            // currentSong = playlist.length-1;
             setCurrentSong(playlist.length-1)
         }
         else {
-            // currentSong--;
             setCurrentSong(currentSong-1);
         }
     }
@@ -101,6 +95,8 @@ export default function VideoPlayer( ) {
             console.log("1 Video played");
             if(!playing) {
                 setPlaying(true);
+                // store.listenToList(store.openedPlaylist);
+                // store.openedPlaylist.listens++;
             }
         } 
         else if (playerStatus === 2) {
@@ -134,12 +130,18 @@ export default function VideoPlayer( ) {
 
     const handleFastForwardButton = () => {
         incSong();
-        loadAndPlaySong(playerReference);
+        if(playing)
+            loadAndPlaySong(playerReference);
+        else
+            loadSong(playerReference);
     }
 
     const handleFastRewindButton = () => {
         decSong();
-        loadAndPlaySong(playerReference);
+        if(playing)
+            loadAndPlaySong(playerReference);
+        else
+            loadSong(playerReference)
     }
 
     return (
