@@ -2,7 +2,7 @@
 
 ![Splash Screen](https://cdn.discordapp.com/attachments/754438628758913098/1082176093982838824/Screenshot_2023-02-07_at_14-12-45_Playlister.png)
 
-Playlister is a web-based app that allows users to seemlessly create, store, and share playlists of YouTube content.
+Playlister is a web-based app that allows users to seemlessly create, store, and share playlists of YouTube content. It's built using the MERN stack and uses JWT to securely transmit users' credentials between the client, server, and database. The interactions between each of these components is handled using Axios.
 
 ## User Accounts
 
